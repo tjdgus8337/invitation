@@ -175,6 +175,7 @@
       z-index: 2000;
       justify-content: center;
       align-items: center;
+      touch-action: pan-y;
     }
 
     .modal img {
@@ -480,7 +481,8 @@
             <div style="font-size: 12px; color: #888;">아버지 김태훈</div>
             <div class="account-row">
               <div class="account-info"><strong>국민은행</strong> 09021-0647-841</div>
-              <button class="copy-btn" onclick="copyAccount('09021 0647 841')">복사</button>
+              <!-- 공백 제거 수정 완료 -->
+              <button class="copy-btn" onclick="copyAccount('090210647841')">복사</button>
             </div>
           </div>
           <div class="account-card">
@@ -495,7 +497,7 @@
     </section>
   </div>
 
-  <!-- 이미지 확대 모달 (좌우 버튼 & 카운터 추가) -->
+  <!-- 이미지 확대 모달 (좌우 버튼, 카운터, 스와이프 기능) -->
   <div id="imageModal" class="modal">
     <span class="modal-close" onclick="closeModal()">&times;</span>
     <button class="modal-btn prev" onclick="changeImage(-1)">&lang;</button>
@@ -537,13 +539,29 @@
     setInterval(updateDDay, 1000);
     updateDDay();
 
-    // 2. 계좌번호 클립보드 복사 함수
+    // 2. 계좌번호 클립보드 복사 함수 (안전 모드 적용)
     function copyAccount(accountNumber) {
-      navigator.clipboard.writeText(accountNumber).then(() => {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(accountNumber).then(() => {
+          showToast();
+        }).catch(() => fallbackCopy(accountNumber));
+      } else {
+        fallbackCopy(accountNumber);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
         showToast();
-      }).catch(err => {
+      } catch (err) {
         alert('복사에 실패했습니다. 직접 입력해 주세요.');
-      });
+      }
+      document.body.removeChild(textArea);
     }
 
     // 3. 토스트 애니메이션
@@ -619,6 +637,31 @@
         }
       }
     });
+
+    // 모바일 터치 스와이프(좌우 넘기기) 지원
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const modalEl = document.getElementById('imageModal');
+    modalEl.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    modalEl.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+      const swipeDistance = touchEndX - touchStartX;
+      if (Math.abs(swipeDistance) > 40) { // 40px 이상 이동 시 슬라이드 인식
+        if (swipeDistance < 0) {
+          changeImage(1);  // 왼쪽으로 스와이프 -> 다음 사진
+        } else {
+          changeImage(-1); // 오른쪽으로 스와이프 -> 이전 사진
+        }
+      }
+    }
   </script>
 </body>
 </html>
