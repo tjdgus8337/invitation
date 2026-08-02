@@ -190,28 +190,32 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.35);
       color: #ffffff;
       border: none;
-      font-size: 24px;
-      padding: 12px 16px;
+      font-size: 32px;
+      padding: 16px 20px;
       cursor: pointer;
       border-radius: 50%;
       user-select: none;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.2s;
       z-index: 2100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .modal-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
+    .modal-btn:active {
+      background: rgba(255, 255, 255, 0.4);
+      transform: translateY(-50%) scale(0.95);
     }
 
     .modal-btn.prev {
-      left: 12px;
+      left: 8px;
     }
 
     .modal-btn.next {
-      right: 12px;
+      right: 8px;
     }
 
     .modal-close {
@@ -219,7 +223,8 @@
       top: 20px;
       right: 20px;
       color: #ffffff;
-      font-size: 30px;
+      font-size: 32px;
+      padding: 10px;
       cursor: pointer;
       line-height: 1;
       z-index: 2100;
@@ -387,7 +392,7 @@
       </div>
     </section>
 
-    <!-- 갤러리 (1.jpg ~ 16.jpg) -->
+    <!-- 갤러리 (1.jpg ~ 17.jpg) -->
     <section class="section">
       <div class="section-title">GALLERY</div>
       <div class="gallery-grid">
@@ -407,6 +412,7 @@
         <div class="gallery-item" onclick="openModal(14)"><img src="images/14.jpg" alt="갤러리 14"></div>
         <div class="gallery-item" onclick="openModal(15)"><img src="images/15.jpg" alt="갤러리 15"></div>
         <div class="gallery-item" onclick="openModal(16)"><img src="images/16.jpg" alt="갤러리 16"></div>
+        <div class="gallery-item" onclick="openModal(17)"><img src="images/17.jpg" alt="갤러리 17"></div>
       </div>
     </section>
 
@@ -481,7 +487,6 @@
             <div style="font-size: 12px; color: #888;">아버지 김태훈</div>
             <div class="account-row">
               <div class="account-info"><strong>국민은행</strong> 09021-0647-841</div>
-              <!-- 공백 제거 수정 완료 -->
               <button class="copy-btn" onclick="copyAccount('090210647841')">복사</button>
             </div>
           </div>
@@ -503,7 +508,7 @@
     <button class="modal-btn prev" onclick="changeImage(-1)">&lang;</button>
     <img id="modalImg" src="" alt="확대 이미지">
     <button class="modal-btn next" onclick="changeImage(1)">&rang;</button>
-    <div class="modal-counter"><span id="currentIdx">1</span> / 16</div>
+    <div class="modal-counter"><span id="currentIdx">1</span> / 17</div>
   </div>
 
   <!-- 알림 토스트 -->
@@ -586,19 +591,40 @@
       }
     }
 
-    // 5. 갤러리 이미지 모달 및 슬라이더 연동
-    const TOTAL_IMAGES = 16;
+    // 5. 갤러리 이미지 모달 및 슬라이더 연동 (뒤로가기 제어 추가)
+    const TOTAL_IMAGES = 17;
     let currentImageIndex = 1;
 
     function openModal(index) {
       currentImageIndex = index;
       updateModalImage();
       document.getElementById('imageModal').style.display = 'flex';
+
+      // 모달이 열릴 때 히스토리에 가상 스택(#modal)을 추가합니다.
+      if (history.state?.modal !== true) {
+        history.pushState({ modal: true }, '', '#modal');
+      }
     }
 
     function closeModal() {
-      document.getElementById('imageModal').style.display = 'none';
+      const modal = document.getElementById('imageModal');
+      if (modal.style.display === 'flex') {
+        modal.style.display = 'none';
+
+        // X버튼/배경 클릭으로 닫을 시 쌓여있는 히스토리를 정리합니다.
+        if (history.state?.modal === true) {
+          history.back();
+        }
+      }
     }
+
+    // 스마트폰 뒤로가기 버튼(popstate) 이벤트 감지
+    window.addEventListener('popstate', function(e) {
+      const modal = document.getElementById('imageModal');
+      if (modal.style.display === 'flex') {
+        modal.style.display = 'none';
+      }
+    });
 
     function changeImage(direction) {
       currentImageIndex += direction;
