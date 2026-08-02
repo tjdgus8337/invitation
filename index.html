@@ -44,7 +44,7 @@
     /* 모바일 프레임 컨테이너 */
     .container {
       width: 100%;
-      max-width: 430px; /* 모바일 가로 너비 제약 */
+      max-width: 430px;
       background-color: var(--bg-color);
       min-height: 100vh;
       box-shadow: 0 0 20px rgba(0,0,0,0.05);
@@ -137,7 +137,53 @@
       color: #999;
     }
 
-    /* 4. 오시는 길 & 지도 이미지 */
+    /* 4. 갤러리 섹션 */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s;
+    }
+
+    .gallery-item img:active {
+      transform: scale(0.97);
+    }
+
+    /* 갤러리 사진 확대 모달 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 4px;
+    }
+
+    /* 5. 오시는 길 & 지도 이미지 */
     .map-img-wrap {
       width: 100%;
       border-radius: 8px;
@@ -175,13 +221,38 @@
       background-color: #f0ede8;
     }
 
-    /* 5. 마음 전하실 곳 (계좌) Accordion */
+    /* 6. 마음 전하실 곳 (계좌) Accordion */
+    .accordion-group {
+      margin-top: 16px;
+    }
+
+    .accordion-btn {
+      width: 100%;
+      padding: 14px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .accordion-content {
+      display: none;
+      padding-top: 8px;
+    }
+
     .account-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 16px;
-      margin-bottom: 12px;
+      margin-top: 8px;
       text-align: left;
     }
 
@@ -189,11 +260,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
     .account-info {
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .copy-btn {
@@ -220,7 +291,7 @@
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
-      z-index: 1000;
+      z-index: 3000;
     }
   </style>
 </head>
@@ -232,8 +303,7 @@
       <div class="date-text">2026. 11. 22. SUN 12:20</div>
       <h1 class="title">홍성현 & 김정민</h1>
       <div class="hero-img-wrap">
-        <!-- 메인 사진 저장 경로 (images/main.jpg 또는 외부 링크) -->
-        <img src="/images/thumbs.jpg" alt="웨딩 사진">
+        <img src="images/thumbs.jpg" alt="웨딩 사진">
       </div>
       <p style="font-size: 14px; color: #888;">안양 파티오벨라 1층 마리에가든홀</p>
     </section>
@@ -267,6 +337,29 @@
       </div>
     </section>
 
+    <!-- 갤러리 (1.jpg ~ 16.jpg) -->
+    <section class="section">
+      <div class="section-title">GALLERY</div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('images/1.jpg')"><img src="images/1.jpg" alt="갤러리 1"></div>
+        <div class="gallery-item" onclick="openModal('images/2.jpg')"><img src="images/2.jpg" alt="갤러리 2"></div>
+        <div class="gallery-item" onclick="openModal('images/3.jpg')"><img src="images/3.jpg" alt="갤러리 3"></div>
+        <div class="gallery-item" onclick="openModal('images/4.jpg')"><img src="images/4.jpg" alt="갤러리 4"></div>
+        <div class="gallery-item" onclick="openModal('images/5.jpg')"><img src="images/5.jpg" alt="갤러리 5"></div>
+        <div class="gallery-item" onclick="openModal('images/6.jpg')"><img src="images/6.jpg" alt="갤러리 6"></div>
+        <div class="gallery-item" onclick="openModal('images/7.jpg')"><img src="images/7.jpg" alt="갤러리 7"></div>
+        <div class="gallery-item" onclick="openModal('images/8.jpg')"><img src="images/8.jpg" alt="갤러리 8"></div>
+        <div class="gallery-item" onclick="openModal('images/9.jpg')"><img src="images/9.jpg" alt="갤러리 9"></div>
+        <div class="gallery-item" onclick="openModal('images/10.jpg')"><img src="images/10.jpg" alt="갤러리 10"></div>
+        <div class="gallery-item" onclick="openModal('images/11.jpg')"><img src="images/11.jpg" alt="갤러리 11"></div>
+        <div class="gallery-item" onclick="openModal('images/12.jpg')"><img src="images/12.jpg" alt="갤러리 12"></div>
+        <div class="gallery-item" onclick="openModal('images/13.jpg')"><img src="images/13.jpg" alt="갤러리 13"></div>
+        <div class="gallery-item" onclick="openModal('images/14.jpg')"><img src="images/14.jpg" alt="갤러리 14"></div>
+        <div class="gallery-item" onclick="openModal('images/15.jpg')"><img src="images/15.jpg" alt="갤러리 15"></div>
+        <div class="gallery-item" onclick="openModal('images/16.jpg')"><img src="images/16.jpg" alt="갤러리 16"></div>
+      </div>
+    </section>
+
     <!-- 오시는 길 -->
     <section class="section">
       <div class="section-title">LOCATION</div>
@@ -276,12 +369,10 @@
         <span style="font-size: 12px; color: #888;">(파티오벨라, 비산동 1104-1)</span>
       </p>
       
-      <!-- 지도 캡처 사진 캡처본 배치 (경로 예시: ./images/map.jpg) -->
       <div class="map-img-wrap">
         <img src="images/location.png" alt="파티오벨라 약도 이미지">
       </div>
 
-      <!-- 외부 지도 앱 이동 버튼 -->
       <div class="map-btn-group">
         <button class="btn" onclick="window.open('https://map.naver.com/v5/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%95%88%EC%96%91%EC%8B%9C%20%EB%8F%99%EC%95%88%EA%B5%AC%20%EC%8B%9C%EB%AF%BC%EB%8C%80%EB%A1%9C%20159%EB%B2%88%EA%B8%B8%2025')">네이버 지도</button>
         <button class="btn" onclick="window.open('https://map.kakao.com/link/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%95%88%EC%96%91%EC%8B%9C%20%EB%8F%99%EC%95%88%EA%B5%AC%20%EC%8B%9C%EB%AF%BC%EB%8C%80%EB%A1%9C%20159%EB%B2%88%EA%B8%B8%2025')">카카오 맵</button>
@@ -291,24 +382,73 @@
     <!-- 계좌번호 안내 -->
     <section class="section">
       <div class="section-title">ACCOUNT</div>
-      <p style="font-size: 13px; color: #888; margin-bottom: 20px;">마음 전하실 곳</p>
+      <p style="font-size: 13px; color: #888; margin-bottom: 10px;">마음 전하실 곳</p>
       
-      <div class="account-card">
-        <div style="font-size: 12px; color: #888;">신랑측 계좌</div>
-        <div class="account-row">
-          <div class="account-info"><strong>농협은행</strong> 302-0809-9619-21 (홍성현)</div>
-          <button class="copy-btn" onclick="copyAccount('3020809961921')">복사</button>
+      <div class="accordion-group">
+        <!-- 신랑측 계좌 아코디언 -->
+        <button class="accordion-btn" onclick="toggleAccordion('groom-acc')">
+          <span>신랑측 계좌번호 보기</span>
+          <span id="groom-acc-arrow">▼</span>
+        </button>
+        <div id="groom-acc" class="accordion-content">
+          <div class="account-card">
+            <div style="font-size: 12px; color: #888;">신랑 홍성현</div>
+            <div class="account-row">
+              <div class="account-info"><strong>농협은행</strong> 302-0809-9619-21</div>
+              <button class="copy-btn" onclick="copyAccount('3020809961921')">복사</button>
+            </div>
+          </div>
+          <div class="account-card">
+            <div style="font-size: 12px; color: #888;">아버지 홍민표</div>
+            <div class="account-row">
+              <div class="account-info"><strong>농협은행</strong> 122-02-012725</div>
+              <button class="copy-btn" onclick="copyAccount('12202012725')">복사</button>
+            </div>
+          </div>
+          <div class="account-card">
+            <div style="font-size: 12px; color: #888;">어머니 최성덕</div>
+            <div class="account-row">
+              <div class="account-info"><strong>농협은행</strong> 128-12-322101</div>
+              <button class="copy-btn" onclick="copyAccount('12812322101')">복사</button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="account-card">
-        <div style="font-size: 12px; color: #888;">신부측 계좌</div>
-        <div class="account-row">
-          <div class="account-info"><strong>신한은행</strong> 110-433-257664 (김정민)</div>
-          <button class="copy-btn" onclick="copyAccount('110433257664')">복사</button>
+        <!-- 신부측 계좌 아코디언 -->
+        <button class="accordion-btn" onclick="toggleAccordion('bride-acc')">
+          <span>신부측 계좌번호 보기</span>
+          <span id="bride-acc-arrow">▼</span>
+        </button>
+        <div id="bride-acc" class="accordion-content">
+          <div class="account-card">
+            <div style="font-size: 12px; color: #888;">신부 김정민</div>
+            <div class="account-row">
+              <div class="account-info"><strong>신한은행</strong> 110-433-257664</div>
+              <button class="copy-btn" onclick="copyAccount('110433257664')">복사</button>
+            </div>
+          </div>
+          <div class="account-card">
+            <div style="font-size: 12px; color: #888;">아버지 김태훈</div>
+            <div class="account-row">
+              <div class="account-info"><strong>국민은행</strong> 09021-0647-841</div>
+              <button class="copy-btn" onclick="copyAccount('090210647841')">복사</button>
+            </div>
+          </div>
+          <div class="account-card">
+            <div style="font-size: 12px; color: #888;">어머니 한승희</div>
+            <div class="account-row">
+              <div class="account-info"><strong>우리은행</strong> 743-197834-02-001</div>
+              <button class="copy-btn" onclick="copyAccount('74319783402001')">복사</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- 이미지 확대 모달 -->
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <img id="modalImg" src="" alt="확대 이미지">
   </div>
 
   <!-- 알림 토스트 -->
@@ -360,6 +500,31 @@
       setTimeout(() => {
         toast.style.opacity = '0';
       }, 2000);
+    }
+
+    // 4. 아코디언 토글 함수 (신랑측 / 신부측)
+    function toggleAccordion(id) {
+      const content = document.getElementById(id);
+      const arrow = document.getElementById(id + '-arrow');
+      if (content.style.display === 'block') {
+        content.style.display = 'none';
+        arrow.innerText = '▼';
+      } else {
+        content.style.display = 'block';
+        arrow.innerText = '▲';
+      }
+    }
+
+    // 5. 갤러리 이미지 모달 열기/닫기
+    function openModal(src) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = src;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
     }
   </script>
 </body>
