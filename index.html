@@ -30,22 +30,22 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      /* 텍스트/이미지 선택 및 모바일 롱프레스 차단 */
+      /* 텍스트 선택 및 모바일 롱프레스(길게 누르기 메뉴) 완전 차단 */
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
-      -webkit-touch-callout: none;
+      -webkit-touch-callout: none !important;
     }
 
+    /* 이미지 보안 강화 스타일 */
     img {
-      /* 이미지 드래그 및 롱프레스 팝업 방지 */
-      -webkit-user-drag: none;
-      -khtml-user-drag: none;
-      -moz-user-drag: none;
-      -o-user-drag: none;
-      user-drag: none;
-      pointer-events: auto; /* 클릭 이벤트는 수신 가능하도록 설정 */
+      -webkit-touch-callout: none !important; /* iOS / Safari 롱프레스 차단 */
+      -webkit-user-drag: none !important;     /* Chrome / Safari 드래그 차단 */
+      -khtml-user-drag: none !important;
+      -moz-user-drag: none !important;
+      -o-user-drag: none !important;
+      user-drag: none !important;
     }
 
     body {
@@ -445,10 +445,10 @@
       </div>
 
       <div class="map-btn-group">
-        <!-- 네이버 지도: 파티오벨라 플레이스 직접 연결 -->
+        <!-- 네이버 지도 -->
         <button class="btn" onclick="window.open('https://map.naver.com/p/entry/place/1572417432')">네이버 지도</button>
-        <!-- 카카오맵: 파티오벨라 장소 정확하게 연결 -->
-        <button class="btn" onclick="window.open('https://map.kakao.com/link/search/%ED%8C%8C%ED%8B%B0%EC%98%A4%EB%B2%88%EB%9D%BC'.replace('%ED%8C%8C%ED%8B%B0%EC%98%A4%EB%B2%88%EB%9D%BC', '%ED%8C%8C%ED%8B%B0%EC%98%A4%EB%B2%88%EB%9D%BC'))">카카오 맵</button>
+        <!-- 카카오맵 -->
+        <button class="btn" onclick="window.open('https://place.map.kakao.com/1731754423?fromAppLink=true')">카카오 맵</button>
       </div>
     </section>
 
@@ -532,14 +532,20 @@
   <div id="toast">계좌번호가 복사되었습니다.</div>
 
   <script>
-    // 0. 우클릭 방지 & 드래그 방지 (이미지 다른 이름으로 저장 / 롱프레스 차단)
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-    }, false);
+    // -------------------------------------------------------------
+    // 이미지 보안 강화 (PC 우클릭/드래그 차단 & 모바일 롱프레스 완전 차단)
+    // -------------------------------------------------------------
+    ['contextmenu', 'dragstart', 'selectstart'].forEach(function(evt) {
+      document.addEventListener(evt, function(e) {
+        e.preventDefault();
+      }, false);
+    });
 
-    document.addEventListener('dragstart', function(e) {
+    // 모바일 롱프레스 팝업(다른 브라우저로 열기, 이미지 저장 등) 무효화
+    window.addEventListener('contextmenu', function(e) {
       e.preventDefault();
-    }, false);
+      return false;
+    }, { passive: false });
 
     // 1. D-Day 계산 로직
     const weddingDate = new Date('2026-11-22T12:20:00');
