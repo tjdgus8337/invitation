@@ -434,29 +434,10 @@
       </div>
     </section>
 
-    <!-- 갤러리 (1.jpg ~ 18.jpg) -->
+    <!-- 갤러리 섹션 (자바스크립트로 자동 생성) -->
     <section class="section">
       <div class="section-title">GALLERY</div>
-      <div class="gallery-grid">
-        <div class="gallery-item" onclick="openModal(1)"><img src="images/1.jpg" alt="갤러리 1"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(2)"><img src="images/2.jpg" alt="갤러리 2"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(3)"><img src="images/3.jpg" alt="갤러리 3"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(4)"><img src="images/4.jpg" alt="갤러리 4"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(5)"><img src="images/5.jpg" alt="갤러리 5"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(6)"><img src="images/6.jpg" alt="갤러리 6"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(7)"><img src="images/7.jpg" alt="갤러리 7"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(8)"><img src="images/8.jpg" alt="갤러리 8"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(9)"><img src="images/9.jpg" alt="갤러리 9"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(10)"><img src="images/10.jpg" alt="갤러리 10"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(11)"><img src="images/11.jpg" alt="갤러리 11"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(12)"><img src="images/12.jpg" alt="갤러리 12"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(13)"><img src="images/13.jpg" alt="갤러리 13"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(14)"><img src="images/14.jpg" alt="갤러리 14"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(15)"><img src="images/15.jpg" alt="갤러리 15"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(16)"><img src="images/16.jpg" alt="갤러리 16"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(17)"><img src="images/17.jpg" alt="갤러리 17"><div class="img-guard"></div></div>
-        <div class="gallery-item" onclick="openModal(18)"><img src="images/18.jpg" alt="갤러리 18"><div class="img-guard"></div></div>
-      </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
     </section>
 
     <!-- 오시는 길 -->
@@ -557,7 +538,7 @@
       <div class="img-guard"></div>
     </div>
     <button class="modal-btn next" onclick="changeImage(1)">&rang;</button>
-    <div class="modal-counter"><span id="currentIdx">1</span> / 18</div>
+    <div class="modal-counter"><span id="currentIdx">1</span> / <span id="totalIdx">18</span></div>
   </div>
 
   <!-- 알림 토스트 -->
@@ -567,23 +548,74 @@
     // -------------------------------------------------------------
     // 이미지 강력 보안 (PC 우클릭/드래그 차단 & 모바일 롱프레스 저장 완전 차단)
     // -------------------------------------------------------------
-    const preventEvents = ['contextmenu', 'dragstart', 'selectstart', 'touchstart'];
-    
-    // 글로벌 단에서 우클릭 및 컨텍스트 메뉴 무력화
     window.addEventListener('contextmenu', function(e) {
       e.preventDefault();
       e.stopPropagation();
       return false;
     }, { capture: true, passive: false });
 
-    // 모바일 롱프레스 감지 차단 타이머 로직
-    let longTouchTimer = null;
-    
     document.addEventListener('touchstart', function(e) {
       if (e.touches.length > 1) { // 다중 터치 핀치 줌 관련 제어
         e.preventDefault();
       }
     }, { passive: false });
+
+    // -------------------------------------------------------------
+    // 갤러리 설정 (폴더명 및 이미지 파일 목록)
+    // -------------------------------------------------------------
+    const IMAGE_FOLDER = 'images/gallery'; // 필요 시 'images'로 변경 가능
+
+    // 사용하실 이미지 파일 목록 (원하는 순서대로 자유롭게 작성 및 삽입 가능)
+    const GALLERY_IMAGES = [
+      '1.jpg',
+      '2.jpg',
+      '2_1.jpg',
+      '2_2.jpg',
+      '2_3.jpg',
+      '2_4.jpg',
+      '3.jpg',
+      '4.jpg',
+      '5.jpg',
+      '6.jpg',
+      '7.jpg',
+      '8.jpg',
+      '9.jpg',
+      '10.jpg',
+      '11.jpg',
+      '11_1.jpg',
+      '12.jpg',
+      '13.jpg',
+      '14.jpg',
+      '15.jpg',
+      '16.jpg',
+      '17.jpg',
+      '18.jpg'
+      // 예: 중간에 추가할 때 -> '1_1.jpg', 'extra.jpg' 등 자유롭게 넣으시면 됩니다.
+    ];
+
+    const TOTAL_IMAGES = GALLERY_IMAGES.length;
+
+    // HTML 그리드 자동 생성
+    function renderGallery() {
+      const galleryGrid = document.getElementById('galleryGrid');
+      let galleryHTML = '';
+
+      GALLERY_IMAGES.forEach((fileName, index) => {
+        const imageIndex = index + 1; // 1부터 시작하는 순번
+        galleryHTML += `
+          <div class="gallery-item" onclick="openModal(${imageIndex})">
+            <img src="${IMAGE_FOLDER}/${fileName}" alt="갤러리 ${imageIndex}">
+            <div class="img-guard"></div>
+          </div>
+        `;
+      });
+
+      galleryGrid.innerHTML = galleryHTML;
+      document.getElementById('totalIdx').innerText = TOTAL_IMAGES;
+    }
+
+    // 페이지 로드 시 갤러리 실행
+    renderGallery();
 
     // 1. D-Day 계산 로직
     const weddingDate = new Date('2026-11-22T12:20:00');
@@ -662,7 +694,6 @@
     }
 
     // 5. 갤러리 이미지 모달 및 슬라이더 연동
-    const TOTAL_IMAGES = 18;
     let currentImageIndex = 1;
 
     function openModal(index) {
@@ -706,7 +737,11 @@
     function updateModalImage() {
       const modalImg = document.getElementById('modalImg');
       const counter = document.getElementById('currentIdx');
-      modalImg.src = `images/${currentImageIndex}.jpg`;
+      
+      // 배열에서 현재 순번(1-based)에 맞는 파일명을 가져옴
+      const fileName = GALLERY_IMAGES[currentImageIndex - 1];
+
+      modalImg.src = `${IMAGE_FOLDER}/${fileName}`;
       counter.innerText = currentImageIndex;
     }
 
